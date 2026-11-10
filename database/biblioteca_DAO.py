@@ -10,4 +10,25 @@ class BibliotecaDAO:
     def __init__(self):
         pass
 
-    # TODO
+    def get_all(self):
+        """Recupera tutte le biblioteche dal database."""
+        try:
+            conn = get_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            query = "SELECT * FROM biblioteca"
+            cursor.execute(query)
+
+            risultato = []
+            for row in cursor.fetchall():
+                # Creiamo l'oggetto DTO usando le chiavi del dizionario restituito
+                biblio = Biblioteca(row['id'], row['nome'], row['indirizzo'])
+                risultato.append(biblio)
+
+            cursor.close()
+            conn.close()
+            return risultato
+
+        except Exception as e:
+            print(f"Errore DAO (BibliotecaDAO - get_all): {e}")
+            return None
